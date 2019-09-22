@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
@@ -23,8 +26,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	
 	Rocketship myRocketship = new Rocketship(225, 700, 50, 50);
 	
+	ObjectManager objectManager = new ObjectManager(myRocketship);
+	
 	GamePanel() {
-		frameDraw  = new Timer(1000/60, this);
+		frameDraw  = new Timer(10, this);
 		frameDraw.start();
 	}
 	
@@ -57,7 +62,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 	
 	void updateGameState() {
-		
+		objectManager.update();
 	}
 	
 	void updateEndState() {
@@ -81,10 +86,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 	
 	void drawGameState(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, LeagueInvaders.WIDTH, LeagueInvaders.HEIGHT);
+		try {
+			g.drawImage(ImageIO.read(this.getClass().getResourceAsStream("space.png")), 0, 0, 500, 800, null);
+		} catch (IOException e) {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, WIDTH, HEIGHT);
+		}
 		
-		myRocketship.draw(g);
+		objectManager.draw(g);
 	}
 	
 	void drawEndState(Graphics g) {
@@ -114,16 +123,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    }
 		}
 		if (currentState == GAME) {
-			if (e.getKeyCode() == KeyEvent.VK_UP && myRocketship.y >= 0) {
+			if (e.getKeyCode() == KeyEvent.VK_UP && myRocketship.y >= 50) {
 				myRocketship.up();
 			}
-			if (e.getKeyCode() == KeyEvent.VK_DOWN && myRocketship.y <= (HEIGHT - myRocketship.height)) {
+			if (e.getKeyCode() == KeyEvent.VK_DOWN && myRocketship.y <= (760 - myRocketship.height)) {
 				myRocketship.down();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT && myRocketship.x >= 0) {
 				myRocketship.left();
 			}
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT && myRocketship.x <= (WIDTH - myRocketship.width)) {
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT && myRocketship.x <= (500 - myRocketship.width)) {
 				myRocketship.right();
 			}
 		}
@@ -134,5 +143,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
-	}	
+	}
+	
 }
