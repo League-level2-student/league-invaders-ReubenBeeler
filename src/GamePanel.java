@@ -23,6 +23,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font descriptFont = new Font("Times New Roman", Font.PLAIN, 20);
 	
 	Timer frameDraw;
+	Timer alienSpawn;
 	
 	Rocketship myRocketship = new Rocketship(225, 700, 50, 50);
 	
@@ -63,6 +64,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	
 	void updateGameState() {
 		objectManager.update();
+		if (myRocketship.isActive == false) {
+			alienSpawn.stop();
+			currentState = END;
+		}
 	}
 	
 	void updateEndState() {
@@ -116,25 +121,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-		    if (currentState == END) {
-		        currentState = MENU;
-		    } else {
+		    if (currentState == END) {currentState = MENU;}
+		    else {
 		        currentState++;
+		        if (currentState == GAME) {startGame();}
+		        else {alienSpawn.stop();}
 		    }
 		}
 		if (currentState == GAME) {
-			if (e.getKeyCode() == KeyEvent.VK_UP && myRocketship.y >= 50) {
-				myRocketship.up();
-			}
-			if (e.getKeyCode() == KeyEvent.VK_DOWN && myRocketship.y <= (760 - myRocketship.height)) {
-				myRocketship.down();
-			}
-			if (e.getKeyCode() == KeyEvent.VK_LEFT && myRocketship.x >= 0) {
-				myRocketship.left();
-			}
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT && myRocketship.x <= (500 - myRocketship.width)) {
-				myRocketship.right();
-			}
+			if (e.getKeyCode() == KeyEvent.VK_UP && myRocketship.y >= 50) {myRocketship.up();}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN && myRocketship.y <= (760 - myRocketship.height)) {myRocketship.down();}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT && myRocketship.x >= 0) {myRocketship.left();}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT && myRocketship.x <= (500 - myRocketship.width)) {myRocketship.right();}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+			if (currentState == GAME) {objectManager.addProjectile(myRocketship.getProjectile());}
 		}
 
 	}
@@ -143,6 +144,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void startGame() {
+		alienSpawn = new Timer(1000, objectManager);
+		alienSpawn.start();
 	}
 	
 }

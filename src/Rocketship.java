@@ -19,7 +19,7 @@ public class Rocketship extends GameObject {
 	}
 	
 	void draw(Graphics g) {
-		if (gotImage) {
+		if (gotImage) { 
 			g.drawImage(image, x, y, width, height, null);
 		} else {
 			g.setColor(Color.BLUE);
@@ -53,6 +53,10 @@ public class Rocketship extends GameObject {
 	        }
 	        needImage = false;
 	    }
+	}
+	
+	public Projectile getProjectile() {
+		return new Projectile(x + (width/2), y, 10, 10);
 	}
 	
 }
