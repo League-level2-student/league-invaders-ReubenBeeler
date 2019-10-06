@@ -29,6 +29,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	
 	ObjectManager objectManager = new ObjectManager(myRocketship);
 	
+	boolean up = false;
+	boolean down = false;
+	boolean left = false;
+	boolean right = false;
+	
 	GamePanel() {
 		frameDraw  = new Timer(10, this);
 		frameDraw.start();
@@ -68,6 +73,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			alienSpawn.stop();
 			currentState = END;
 		}
+		if(up && myRocketship.y >= 50) {myRocketship.up();}
+		if(down && myRocketship.y <= (760 - myRocketship.height)) {myRocketship.down();}
+		if(left && myRocketship.x >= 0) {myRocketship.left();}
+		if(right && myRocketship.x <= (500 - myRocketship.width)) {myRocketship.right();}
 	}
 	
 	void updateEndState() {
@@ -129,11 +138,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    }
 		}
 		if (currentState == GAME) {
-			if (e.getKeyCode() == KeyEvent.VK_UP && myRocketship.y >= 50) {myRocketship.up();}
-			if (e.getKeyCode() == KeyEvent.VK_DOWN && myRocketship.y <= (760 - myRocketship.height)) {myRocketship.down();}
-			if (e.getKeyCode() == KeyEvent.VK_LEFT && myRocketship.x >= 0) {myRocketship.left();}
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT && myRocketship.x <= (500 - myRocketship.width)) {myRocketship.right();}
+			if (e.getKeyCode() == KeyEvent.VK_UP) {if(down) {down = false;} else {up = true; left = false; right = false;}}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {if(up) {up = false;} else {down = true; left = false; right = false;}}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {if (right) {right = false;} else {left = true; up = false; down = false;}}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {if (left) {left = false;} else {right = true; up = false; down = false;}}
 		}
+		
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			if (currentState == GAME) {objectManager.addProjectile(myRocketship.getProjectile());}
 		}
@@ -141,13 +151,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyReleased(KeyEvent e) {}
 	
 	public void startGame() {
-		alienSpawn = new Timer(1000, objectManager);
+		alienSpawn = new Timer(500, objectManager);
 		alienSpawn.start();
 	}
 	
