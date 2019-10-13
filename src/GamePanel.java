@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -118,6 +119,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		
 		g.setFont(titleFont);
 		g.drawString("GAME OVER", 95, 100);
+		
+		g.setFont(descriptFont);
+		g.drawString("Score: " + objectManager.score, 200, 200);
 	}
 
 	@Override
@@ -128,7 +132,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 		    if (currentState == END) {currentState = MENU;}
 		    else {
@@ -138,20 +141,28 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    }
 		}
 		if (currentState == GAME) {
-			if (e.getKeyCode() == KeyEvent.VK_UP) {if(down) {down = false;} else {up = true; left = false; right = false;}}
-			if (e.getKeyCode() == KeyEvent.VK_DOWN) {if(up) {up = false;} else {down = true; left = false; right = false;}}
-			if (e.getKeyCode() == KeyEvent.VK_LEFT) {if (right) {right = false;} else {left = true; up = false; down = false;}}
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {if (left) {left = false;} else {right = true; up = false; down = false;}}
+			if (e.getKeyCode() == KeyEvent.VK_UP) {up = true;}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {down = true;}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {left = true;}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {right = true;}
 		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			if (currentState == GAME) {objectManager.addProjectile(myRocketship.getProjectile());}
+			else if (currentState == MENU) {JOptionPane.showMessageDialog(this, "Arrow keys to move, press spacebar to shoot a projectile. If your spaceship hits an alien, you lose.");}
 		}
 
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {}
+	public void keyReleased(KeyEvent e) {
+		if (currentState == GAME) {
+			if (e.getKeyCode() == KeyEvent.VK_UP) {up = false;}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {down = false;}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {left = false;}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {right = false;}
+		}
+	}
 	
 	public void startGame() {
 		alienSpawn = new Timer(500, objectManager);

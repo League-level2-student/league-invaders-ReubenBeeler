@@ -3,7 +3,7 @@ import javax.swing.JPanel;
 
 public class LeagueInvaders {
 	
-	private JFrame frame;
+	JFrame frame;
 	private GamePanel gamePanel;
 	
 	public static final int HEIGHT = 800;
